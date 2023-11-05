@@ -13,46 +13,88 @@ function getComputerChoice(){
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+let roundWinner = ''
+let playerScore = 0
+let computerScore = 0
+
 function playRound(playerSelection, computerSelection) {
     playerSelection = playerSelection.toLowerCase();
     computerSelection = computerSelection.toLowerCase();
 
     if (playerSelection === computerSelection) {
-        return "It's a tie!";
+        roundWinner = "Tie"
     }
-
-    if (
+    else if (
         (playerSelection === "rock" && computerSelection === "scissors") ||
         (playerSelection === "paper" && computerSelection === "rock") ||
         (playerSelection === "scissors" && computerSelection === "paper")
     ) {
-        return `You Win! ${capitalize(playerSelection)} beats ${computerSelection}`;
+        roundWinner = "Player"
+        playerScore++
     } else {
-        return `You Lose! ${capitalize(computerSelection)} beats ${playerSelection}`;
+        roundWinner = "Computer"
+        computerScore++
     }
+    updateScoreNotification(roundWinner, playerSelection, computerSelection)
 }
-function game(){
-    let playerScore = 0;
-    let computerScore = 0;
-    let playerSelection;
-    while(playerScore < 5 && computerScore < 5){
-        playerSelection = prompt("Rock, paper or scissors?");
-        let computerSelection = getComputerChoice();
-        let returnedString = playRound(playerSelection,computerSelection);
-        if(returnedString.startsWith("You Win")){
-            playerScore++;
-        }
-        else if(returnedString.startsWith("You Lose")){
-            computerScore++;
-        }
+function updateScoreNotification(roundWinner, playerSelection, computerSelection) {
+    if (roundWinner === 'Player') {
+        description.textContent = `${capitalize(playerSelection)} beats ${computerSelection}`
+      return
     }
-    if(playerScore === 5){
-        return "Congratulations, you won!"
+    else if (roundWinner === 'Computer') {
+        description.textContent = `${capitalize(computerSelection)} beats ${playerSelection}`
+      return
     }
-    else{
-        return "You lost, computer reached 5 points before you."
-    }
+    description.textContent = `${capitalize(playerSelection)} ties with ${capitalize(computerSelection)}`
 }
-const playerSelection = "rock";
-const computerSelection = getComputerChoice();
-console.log(playRound(playerSelection, computerSelection));
+function updateScore() {
+    if (roundWinner === 'Tie') {
+        currState.textContent = "It's a tie!"
+    } else if (roundWinner === 'Player') {
+        currState.textContent = 'You won!'
+    } else if (roundWinner === 'Computer') {
+        currState.textContent = 'You lost!'
+    }
+  
+    playerScoreContent.textContent = `Player: ${playerScore}`
+    computerScoreContent.textContent = `Computer: ${computerScore}`
+}
+const currState = document.getElementById('currState')
+const description = document.getElementById('description')
+const playerScoreContent = document.getElementById('playerScore')
+const computerScoreContent = document.getElementById('computerScore')
+const rockButton = document.getElementById('rockButton')
+const paperButton = document.getElementById('paperButton')
+const scissorsButton = document.getElementById('scissorsButton')
+rockButton.addEventListener('click', () => handleClick('Rock'))
+paperButton.addEventListener('click', () => handleClick('Paper'))
+scissorsButton.addEventListener('click', () => handleClick('Scissors'))
+
+function handleClick(playerSelection) {
+    if(playerScore === 5 || computerScore === 5) {
+        if(playerScore === 5){
+           currState.textContent = "Congratulations, you won!"
+           description.textContent = "Refresh the page to play again." 
+        }
+        else {
+            currState.textContent = "You lost, computer reached 5 points before you."
+            description.textContent = "Refresh the page to try your chance again."
+        }
+    }
+
+    let computerSelection = getComputerChoice()
+    playRound(playerSelection, computerSelection)
+    updateScore()
+
+    if(playerScore === 5 || computerScore === 5) {
+        if(playerScore === 5){
+           currState.textContent = "Congratulations, you won!"
+           description.textContent = "Refresh the page to play again."
+        }
+        else {
+            currState.textContent = "You lost, computer reached 5 points before you."
+            description.textContent = "Refresh the page to try your chance again."
+        }
+    }
+  }
