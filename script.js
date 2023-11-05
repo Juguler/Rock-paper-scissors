@@ -73,6 +73,7 @@ scissorsButton.addEventListener('click', () => handleClick('Scissors'))
 
 function handleClick(playerSelection) {
     if(playerScore === 5 || computerScore === 5) {
+        disableButtons()
         if(playerScore === 5){
            currState.textContent = "Congratulations, you won!"
            description.textContent = "Refresh the page to play again." 
@@ -88,6 +89,7 @@ function handleClick(playerSelection) {
     updateScore()
 
     if(playerScore === 5 || computerScore === 5) {
+        disableButtons()
         if(playerScore === 5){
            currState.textContent = "Congratulations, you won!"
            description.textContent = "Refresh the page to play again."
@@ -98,3 +100,9 @@ function handleClick(playerSelection) {
         }
     }
   }
+  function disableButtons() {
+    let buttons = document.querySelectorAll('.button');
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+}
